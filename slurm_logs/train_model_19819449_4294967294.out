@@ -1,0 +1,117 @@
+==========================================================
+Slurm Job ID: 19819449
+Job executing on: gpu06
+Starting at: Tue Sep  2 04:33:52 PDT 2025
+==========================================================
+
+Activating Conda environment...
+Conda environment 'dreams' activated.
+
+Using device: cuda
+Loading SMILES vocabulary from /bigdata/jianglab/shared/ExploreData/vocab/smiles_vocab.json...
+Vocabulary loaded from /bigdata/jianglab/shared/ExploreData/vocab/smiles_vocab.json. Total tokens: 60
+SMILES vocabulary size: 60
+Building formula vocabulary from /bigdata/jianglab/shared/ExploreData/data_splits/train_set.hdf5...
+Formula vocabulary built with 27 unique tokens.
+Formula vocabulary built. Size: 27
+Creating DataLoaders...
+Data loading complete.
+Model has 4,581,628 trainable parameters.
+
+--- Epoch 1/100 ---
+Epoch 1 | Train Loss: 0.7971 | Val Loss: 0.4399
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 2/100 ---
+Epoch 2 | Train Loss: 0.4890 | Val Loss: 0.3901
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 3/100 ---
+Epoch 3 | Train Loss: 0.4429 | Val Loss: 0.3623
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 4/100 ---
+Epoch 4 | Train Loss: 0.4210 | Val Loss: 0.3520
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 5/100 ---
+Epoch 5 | Train Loss: 0.4124 | Val Loss: 0.3453
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 6/100 ---
+Epoch 6 | Train Loss: 0.3989 | Val Loss: 0.3421
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 7/100 ---
+Epoch 7 | Train Loss: 0.3998 | Val Loss: 0.3409
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 8/100 ---
+Epoch 8 | Train Loss: 0.3833 | Val Loss: 0.3301
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 9/100 ---
+Epoch 9 | Train Loss: 0.3700 | Val Loss: 0.3322
+Validation loss did not improve. Early stopping counter: 1/10
+
+--- Epoch 10/100 ---
+Epoch 10 | Train Loss: 0.3656 | Val Loss: 0.3301
+Validation loss did not improve. Early stopping counter: 2/10
+
+--- Epoch 11/100 ---
+Epoch 11 | Train Loss: 0.3599 | Val Loss: 0.3282
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 12/100 ---
+Epoch 12 | Train Loss: 0.3503 | Val Loss: 0.3198
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 13/100 ---
+Epoch 13 | Train Loss: 0.3432 | Val Loss: 0.3506
+Validation loss did not improve. Early stopping counter: 1/10
+
+--- Epoch 14/100 ---
+Epoch 14 | Train Loss: 0.3436 | Val Loss: 0.3343
+Validation loss did not improve. Early stopping counter: 2/10
+
+--- Epoch 15/100 ---
+Epoch 15 | Train Loss: 0.3414 | Val Loss: 0.3277
+Validation loss did not improve. Early stopping counter: 3/10
+
+--- Epoch 16/100 ---
+Epoch 16 | Train Loss: 0.3322 | Val Loss: 0.3162
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 17/100 ---
+Epoch 17 | Train Loss: 0.3339 | Val Loss: 0.3172
+Validation loss did not improve. Early stopping counter: 1/10
+
+--- Epoch 18/100 ---
+Epoch 18 | Train Loss: 0.3344 | Val Loss: 0.3167
+Validation loss did not improve. Early stopping counter: 2/10
+
+--- Epoch 19/100 ---
+Epoch 19 | Train Loss: 0.3252 | Val Loss: 0.3131
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+
+--- Epoch 20/100 ---
+Epoch 20 | Train Loss: 0.3343 | Val Loss: 0.3297
+Validation loss did not improve. Early stopping counter: 1/10
+
+--- Epoch 21/100 ---
+Epoch 21 | Train Loss: 0.3426 | Val Loss: 0.3390
+Validation loss did not improve. Early stopping counter: 2/10
+
+--- Epoch 22/100 ---
+Epoch 22 | Train Loss: 0.3436 | Val Loss: 0.3176
+Validation loss did not improve. Early stopping counter: 3/10
+
+--- Epoch 23/100 ---
+Epoch 23 | Train Loss: 0.3331 | Val Loss: 0.3450
+Validation loss did not improve. Early stopping counter: 4/10
+
+--- Epoch 24/100 ---
+Epoch 24 | Train Loss: 0.3412 | Val Loss: 0.3533
+Validation loss did not improve. Early stopping counter: 5/10
+
+--- Epoch 25/100 ---

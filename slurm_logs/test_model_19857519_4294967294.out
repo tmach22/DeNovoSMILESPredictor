@@ -1,0 +1,32 @@
+==========================================================
+Slurm Job ID: 19857519
+Job executing on: gpu11
+Starting at: Wed Sep  3 09:56:49 PDT 2025
+==========================================================
+
+Activating Conda environment...
+Conda environment 'dreams' activated.
+
+Using device: cuda
+Loading SMILES vocabulary from /bigdata/jianglab/shared/ExploreData/vocab/smiles_vocab.json...
+Vocabulary loaded from /bigdata/jianglab/shared/ExploreData/vocab/smiles_vocab.json. Total tokens: 60
+Loading formula vocabulary from /bigdata/jianglab/shared/ExploreData/vocab/formula_vocab.json...
+Vocabulary loaded from /bigdata/jianglab/shared/ExploreData/vocab/formula_vocab.json. Total tokens: 27
+Model loaded from /bigdata/jianglab/shared/ExploreData/models/best_model.pth
+Loading test data from /bigdata/jianglab/shared/ExploreData/data_splits/test_set.hdf5...
+
+--- Starting Full Evaluation on Test Set ---
+
+--- Evaluation Complete ---
+Total Test Samples Evaluated: 221052
+----------------------------------------
+  Chemical Validity Rate: 93.90%
+  Exact Match Accuracy:   0.53%
+  Average Tanimoto Sim.:  0.3220
+----------------------------------------
+
+Python script finished.
+
+==========================================================
+Job finished at: Thu Sep  4 01:35:06 PDT 2025
+==========================================================

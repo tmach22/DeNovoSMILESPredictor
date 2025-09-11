@@ -1,0 +1,28 @@
+==========================================================
+Slurm Job ID: 20052546
+Job executing on: gpu06
+Starting at: Thu Sep 11 15:12:07 PDT 2025
+==========================================================
+
+Activating Conda environment...
+Conda environment 'dreams' activated.
+
+Using device: cuda
+--- Initializing Tokenizers and Loading Vocabularies ---
+Vocabulary loaded from /bigdata/jianglab/shared/ExploreData/vocab/smiles_vocab.json. Total tokens: 60
+Vocabulary loaded from /bigdata/jianglab/shared/ExploreData/vocab/formula_vocab.json. Total tokens: 27
+
+--- Creating Graph DataLoaders ---
+
+--- Initializing GNN-Enhanced Model ---
+Model has 4,720,134 trainable parameters.
+
+--- Epoch 1/100 ---
+Epoch 1 | Train Loss: 0.7499 | Val Loss: 0.4589
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model_gnn.pth
+
+--- Epoch 2/100 ---
+Epoch 2 | Train Loss: 0.5142 | Val Loss: 0.3988
+Validation loss improved. Model saved to /bigdata/jianglab/shared/ExploreData/models/best_model_gnn.pth
+
+--- Epoch 3/100 ---
