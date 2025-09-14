@@ -34,9 +34,10 @@ smiled_vocab_path="/bigdata/jianglab/shared/ExploreData/vocab/smiles_vocab.json"
 formula_vocab_path="/bigdata/jianglab/shared/ExploreData/vocab/formula_vocab.json"
 model_output_path="/bigdata/jianglab/shared/ExploreData/models/"
 patience=10
-learning_rate=2e-4
+learning_rate=3e-4
+num_workers=2
 
-python "${python_script}" --train_path "${train_data_path}" --val_path "${val_data_path}" --smiles_vocab_path "${smiled_vocab_path}" --formula_vocab_path "${formula_vocab_path}" --save_dir "${model_output_path}" --patience "${patience}" --learning_rate "${learning_rate}"
+python "${python_script}" --train_path "${train_data_path}" --val_path "${val_data_path}" --smiles_vocab_path "${smiled_vocab_path}" --formula_vocab_path "${formula_vocab_path}" --save_dir "${model_output_path}" --patience "${patience}" --learning_rate "${learning_rate}" --num_workers "${num_workers}"
 
 echo
 echo "Python script finished."

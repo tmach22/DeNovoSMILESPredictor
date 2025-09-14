@@ -5,11 +5,11 @@
 #SBATCH --nodes=1                     # Request 1 node per task
 #SBATCH --ntasks=1                    # Run a single task per array element
 #SBATCH --cpus-per-task=2             # Request 4 CPU cores per task (DreaMS benefits from some CPU for data loading/processing)
-#SBATCH --mem=16G                     # Request 16GB of memory per task (adjust based on chunk size, DreaMS needs RAM)
-#SBATCH --time=0-02:00:00             # Max runtime per task: 30 minutes (adjust based on chunk processing time)
+#SBATCH --mem=64G                     # Request 16GB of memory per task (adjust based on chunk size, DreaMS needs RAM)
+#SBATCH --time=0-25:00:00             # Max runtime per task: 30 minutes (adjust based on chunk processing time)
 #SBATCH --gres=gpu:1                  # Request 1 GPU per task (DreaMS leverages GPU heavily for embedding computation) [1]
-#SBATCH --output=/rhome/tmach007/bigdata/jianglab/tmach007/DreaMS_Project_TejasMachkar/slurm_logs/embed_gen_%A_%a.out # Standard output file
-#SBATCH --error=/rhome/tmach007/bigdata/jianglab/tmach007/DreaMS_Project_TejasMachkar/slurm_logs/embed_gen_%A_%a.err  # Standard error file
+#SBATCH --output=/bigdata/jianglab/shared/ExploreData/slurm_logs/embed_gen_%A_%a.out # Standard output file
+#SBATCH --error=/bigdata/jianglab/shared/ExploreData/slurm_logs/embed_gen_%A_%a.err  # Standard error file
 
 echo "=========================================================="
 echo "Slurm Job ID: $SLURM_JOB_ID"
@@ -30,8 +30,8 @@ echo
 # --- 3. Define File Paths ---
 # IMPORTANT: Set the full paths to your Python script, input JSON, and output HDF5 file
 PYTHON_SCRIPT="/bigdata/jianglab/shared/DreaMS/generate_embeddings.py"
-INPUT_MGF_FILE="/bigdata/jianglab/shared/ExploreData/extracted_data_json/for_tejas/mgf_files/mgf_file_with_splits.mgf"
-OUTPUT_HDF5="/bigdata/jianglab/shared/ExploreData/extracted_data_json/for_tejas/hdf5_files/hdf5_files_with_split.hdf5"
+INPUT_MGF_FILE="/bigdata/jianglab/shared/ExploreData/data_for_dreams_in_silica/"
+OUTPUT_HDF5="/bigdata/jianglab/shared/ExploreData/hdf5_files/dreams_embeddings.hdf5"
 
 # --- 4. Run the Python Script ---
 echo "Running Python script: ${PYTHON_SCRIPT}"
@@ -39,7 +39,7 @@ echo "Input file: ${INPUT_MGF_FILE}"
 echo "Output file: ${OUTPUT_HDF5}"
 echo
 
-python "${PYTHON_SCRIPT}" "${INPUT_MGF_FILE}" "${OUTPUT_HDF5}"
+python "${PYTHON_SCRIPT}" --input_dir "${INPUT_MGF_FILE}" --output_file "${OUTPUT_HDF5}"
 
 echo
 echo "Python script finished."

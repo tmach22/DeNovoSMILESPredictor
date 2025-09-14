@@ -91,12 +91,12 @@ def process_chunks_to_hdf5(mgf_dir, output_path):
                 hf['peaks_intensities'].resize(new_size, axis=0)
 
                 # Write the new data into the newly allocated space
-                hf['embeddings'][current_size:] = embeddings
-                hf['smiles'][current_size:] = smiles_list
-                hf['adduct'][current_size:] = adduct_list
-                hf['precursor_mz'][current_size:] = mz_list
-                hf['peaks_mz'][current_size:] = peaks_mz_list
-                hf['peaks_intensities'][current_size:] = peaks_intensities_list
+                # hf['embeddings'][current_size:] = embeddings
+                # hf['smiles'][current_size:] = smiles_list
+                # hf['adduct'][current_size:] = adduct_list
+                # hf['precursor_mz'][current_size:] = mz_list
+                # hf['peaks_mz'][current_size:] = peaks_mz_list
+                # hf['peaks_intensities'][current_size:] = peaks_intensities_list
 
             except Exception as e:
                 print(f"\nAn error occurred while processing {os.path.basename(mgf_path)}: {e}")

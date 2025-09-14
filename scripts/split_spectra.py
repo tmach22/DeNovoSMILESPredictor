@@ -153,7 +153,7 @@ if __name__ == '__main__':
         "--split_ratios",
         type=float,
         nargs=3,
-        default=[0.8, 0.1, 0.1],
+        default=[0.7, 0.2, 0.1],
         help="A list of three floats for train, validation, and test split ratios (e.g., 0.8 0.1 0.1)."
     )
     args = parser.parse_args()

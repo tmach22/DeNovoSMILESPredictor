@@ -11,7 +11,7 @@ import argparse
 
 from tokenizer import TokenizerWrapper 
 
-# --- [No changes to these helper functions] ---
+# --- [Helper functions remain unchanged] ---
 def get_formula_from_smiles(smiles_string):
     mol = Chem.MolFromSmiles(smiles_string)
     if mol is None: return ""
@@ -32,43 +32,32 @@ def one_hot_encode(value, permitted_list):
 
 def get_atom_features(atom: Chem.Atom) -> list:
     features = []
-    features += one_hot_encode(atom.GetSymbol(), ['C', 'N', 'O', 'P', 'S', 'F', 'Cl', 'Br', 'I', 'other'])
+    features += one_hot_encode(atom.GetSymbol(),)
     features += one_hot_encode(atom.GetDegree(), list(range(11)))
     features += one_hot_encode(atom.GetTotalNumHs(), list(range(9)))
-    features += one_hot_encode(str(atom.GetHybridization()), ['SP', 'SP2', 'SP3', 'SP3D', 'SP3D2', 'OTHER'])
+    features += one_hot_encode(str(atom.GetHybridization()),)
     features.append(atom.GetIsAromatic())
     features.append(atom.IsInRing())
     return features
 
 def get_bond_features(bond: Chem.Bond) -> list:
     features = []; bt = bond.GetBondType()
-    features += one_hot_encode(bt, [Chem.rdchem.BondType.SINGLE, Chem.rdchem.BondType.DOUBLE, Chem.rdchem.BondType.TRIPLE, Chem.rdchem.BondType.AROMATIC, 'other'])
+    features += one_hot_encode(bt,)
     features.append(bond.GetIsConjugated())
     return features
 
-# --- NEW: Function to create a default graph for acyclic molecules ---
 def create_dummy_graph():
-    """
-    Creates a default graph object for molecules without a scaffold.
-    This serves as a learnable "no scaffold" embedding.
-    """
-    # It has one dummy node with features of the correct dimension (38)
     node_features = torch.zeros(1, 38, dtype=torch.float)
-    # It has no edges
     edge_index = torch.empty(2, 0, dtype=torch.long)
     edge_attr = torch.empty(0, 6, dtype=torch.float)
     return Data(x=node_features, edge_index=edge_index, edge_attr=edge_attr)
 
-# --- UPDATED: smiles_to_graph_data now uses the dummy graph ---
 def smiles_to_graph_data(smiles: str) -> Data:
-    """Converts a SMILES string into a graph with rich atom and bond features."""
-    if not smiles: # Handle empty SMILES string input
+    if not smiles:
         return create_dummy_graph()
-
     mol = Chem.MolFromSmiles(smiles)
     if mol is None or mol.GetNumAtoms() == 0:
         return create_dummy_graph()
-
     atom_features_list = [get_atom_features(atom) for atom in mol.GetAtoms()]
     x = torch.tensor(atom_features_list, dtype=torch.float)
     edge_indices, edge_attrs = [], []
@@ -79,25 +68,29 @@ def smiles_to_graph_data(smiles: str) -> Data:
     edge_attr = torch.tensor(edge_attrs, dtype=torch.float)
     return Data(x=x, edge_index=edge_index, edge_attr=edge_attr)
 
+# UPDATED: The dataset no longer needs a transform argument.
 class SmilesGraphDataset(torch.utils.data.Dataset):
     def __init__(self, hdf5_path):
         with h5py.File(hdf5_path, 'r') as f:
             self.embeddings = f['embeddings'][:]; self.smiles = [s.decode('utf-8') for s in f['smiles'][:]]
+
     def __len__(self): return len(self.smiles)
+
     def __getitem__(self, idx):
         smiles_string = self.smiles[idx]
         formula = get_formula_from_smiles(smiles_string)
         scaffold_smiles = get_murcko_scaffold(smiles_string)
         scaffold_graph = smiles_to_graph_data(scaffold_smiles)
+        
         return {"embedding": self.embeddings[idx], "formula": formula, "scaffold_graph": scaffold_graph, "smiles": smiles_string}
 
+# UPDATED: The function no longer needs a drop_edge_rate argument.
 def get_graph_data_loader(hdf5_path, smiles_tokenizer, formula_tokenizer, split, batch_size=32, num_workers=0):
     dataset = SmilesGraphDataset(hdf5_path)
     smiles_pad_idx = smiles_tokenizer.vocab['<pad>']
     formula_pad_idx = formula_tokenizer.vocab['<pad>']
 
     def collate_graphs(data_list):
-        # --- UPDATED: No more filtering needed, as every item now has a valid graph object ---
         embeddings = [item['embedding'] for item in data_list]
         formulas = [item['formula'] for item in data_list]
         scaffold_graphs = [item['scaffold_graph'] for item in data_list]

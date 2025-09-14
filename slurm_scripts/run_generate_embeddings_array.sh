@@ -37,7 +37,7 @@ source ~/.bashrc # Or your shell's equivalent to ensure conda is initialized
 conda activate dreams
 echo "Conda environment 'dreams' activated."
 
-ITERATIONS=43
+ITERATIONS=36
 
 # The for loop iterates from 1 to the value of ITERATIONS
 for i in $(seq 0 $ITERATIONS); do
