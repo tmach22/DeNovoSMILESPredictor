@@ -130,7 +130,7 @@ def main(args):
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             epochs_no_improve = 0
-            checkpoint_path = os.path.join(args.save_dir, 'best_model_gnn.pth')
+            checkpoint_path = os.path.join(args.save_dir, 'best_model_gnn_sample.pth')
             torch.save(model.state_dict(), checkpoint_path)
             print(f"Validation loss improved. Model saved to {checkpoint_path}")
         else:

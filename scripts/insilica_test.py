@@ -12,15 +12,23 @@ from rdkit.Chem import AllChem
 
 # Import your custom model and tokenizer classes
 from model import SmilesRecyclingDecoder
-# UPDATED: Import the graph conversion functions from the final data loader
 from data_loader import get_formula_from_smiles, get_murcko_scaffold, smiles_to_graph_data
 from tokenizer import TokenizerWrapper
 
 # --- Model Hyperparameters (Must match the trained model) ---
-D_MODEL, NHEAD, NUM_LAYERS = 256, 8, 6
-DIM_FEEDFORWARD, DREAMS_DIM = 1024, 1024
-FORMULA_EMB_DIM, SCAFFOLD_EMB_DIM = 64, 128
-GNN_HIDDEN_DIM, NUM_RECYCLING_ITERS = 128, 3
+D_MODEL = 256
+NHEAD = 8
+# UPDATED: Renamed NUM_LAYERS to be more specific and added GNN_LAYERS
+GNN_LAYERS = 2 
+NUM_DECODER_LAYERS = 6
+DIM_FEEDFORWARD = 1024
+DREAMS_DIM = 1024
+FORMULA_EMB_DIM = 64
+SCAFFOLD_EMB_DIM = 128
+GNN_HIDDEN_DIM = 128
+# NEW: Add drop_edge_rate to match the model's __init__ signature
+DROP_EDGE_RATE = 0.2 # This is ignored during eval, but needed for initialization
+NUM_RECYCLING_ITERS = 3
 
 def calculate_tanimoto(smiles1, smiles2):
     """Calculates the Tanimoto similarity between two SMILES strings."""
@@ -40,7 +48,6 @@ def generate_smiles(model, dreams_emb, formula_tokens, scaffold_graph, smiles_to
     sos_token, eos_token = smiles_tokenizer.vocab['<sos>'], smiles_tokenizer.vocab['<eos>']
     generated_seq = torch.tensor([[sos_token]], dtype=torch.long, device=device)
 
-    # For inference on a single item, we put the graph object (real or dummy) in a list
     scaffold_graph_list = [scaffold_graph]
 
     with torch.no_grad():
@@ -50,7 +57,7 @@ def generate_smiles(model, dreams_emb, formula_tokens, scaffold_graph, smiles_to
             next_token = torch.argmax(last_token_logits, dim=-1).unsqueeze(0)
             generated_seq = torch.cat([generated_seq, next_token], dim=1)
             if next_token.item() == eos_token: break
-                
+            
     return smiles_tokenizer.decode(generated_seq.squeeze(0).cpu().tolist())
 
 def main(args):
@@ -65,11 +72,16 @@ def main(args):
     formula_vocab_size = len(formula_tokenizer.vocab)
 
     print("\n--- Initializing GNN-Enhanced Model Architecture ---")
+    # --- FIXED: Updated the model initialization to match the new signature ---
+    # - 'num_layers' is now 'num_decoder_layers'
+    # - Added 'num_gnn_layers' and 'drop_edge_rate' arguments
     model = SmilesRecyclingDecoder(
         smiles_vocab_size=smiles_vocab_size, d_model=D_MODEL, nhead=NHEAD,
-        num_layers=NUM_LAYERS, dim_feedforward=DIM_FEEDFORWARD, dreams_dim=DREAMS_DIM,
+        num_decoder_layers=NUM_DECODER_LAYERS, dim_feedforward=DIM_FEEDFORWARD, dreams_dim=DREAMS_DIM,
         formula_vocab_size=formula_vocab_size, formula_emb_dim=FORMULA_EMB_DIM,
         scaffold_emb_dim=SCAFFOLD_EMB_DIM, gnn_hidden_dim=GNN_HIDDEN_DIM,
+        num_gnn_layers=GNN_LAYERS,
+        drop_edge_rate=DROP_EDGE_RATE,
         num_recycling_iters=NUM_RECYCLING_ITERS
     ).to(device)
 
@@ -83,7 +95,7 @@ def main(args):
     if args.num_samples: test_embeddings, test_smiles = test_embeddings[:args.num_samples], test_smiles[:args.num_samples]
 
     print(f"\n--- Running Inference on {len(test_smiles)} Samples ---")
-    predictions, tanimoto_scores, valid_count = [], [], 0
+    predictions, tanimoto_scores, valid_count = [],[], 0
 
     for i in tqdm(range(len(test_smiles)), desc="Testing"):
         true_smiles = test_smiles[i]
@@ -94,9 +106,6 @@ def main(args):
         
         formula_tokens = torch.tensor(formula_tokenizer.encode(formula_str), dtype=torch.long).unsqueeze(0).to(device)
         
-        # --- UPDATED LOGIC ---
-        # We no longer need to check if the graph is None.
-        # The data loader now guarantees a valid graph object (real or dummy).
         scaffold_graph = smiles_to_graph_data(scaffold_str)
         
         predicted_smiles = generate_smiles(model, dreams_emb, formula_tokens, scaffold_graph, smiles_tokenizer, device)
@@ -111,7 +120,7 @@ def main(args):
 
     print("\n--- Evaluation Complete ---")
     print(f"Total Samples:          {len(test_smiles)}")
-    print(f"SMILES Validity:        {validity_percent:.2f}%")
+    print(f"SMILES Validity:          {validity_percent:.2f}%")
     print(f"Exact Match Accuracy:   {exact_match_percent:.2f}%")
     print(f"Average Tanimoto Score: {avg_tanimoto:.4f}")
     

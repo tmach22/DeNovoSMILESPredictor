@@ -6,7 +6,7 @@
 #SBATCH --ntasks=1                    # Run a single task per array element
 #SBATCH --cpus-per-task=2             # Request 4 CPU cores per task (DreaMS benefits from some CPU for data loading/processing)
 #SBATCH --mem=64G                     # Request 16GB of memory per task (adjust based on chunk size, DreaMS needs RAM)
-#SBATCH --time=0-25:00:00             # Max runtime per task: 30 minutes (adjust based on chunk processing time)
+#SBATCH --time=0-30:00:00             # Max runtime per task: 30 minutes (adjust based on chunk processing time)
 #SBATCH --gres=gpu:1                  # Request 1 GPU per task (DreaMS leverages GPU heavily for embedding computation) [1]
 #SBATCH --output=/bigdata/jianglab/shared/ExploreData/slurm_logs/test_model_tri_gnn_10k_%A_%a.out # Standard output file
 #SBATCH --error=/bigdata/jianglab/shared/ExploreData/slurm_logs/test_model_tri_gnn_10k_%A_%a.err  # Standard error file
@@ -28,13 +28,13 @@ echo "Conda environment 'dreams' activated."
 echo
 
 python_script="/bigdata/jianglab/shared/ExploreData/scripts/insilica_test.py"
-test_data_path="/bigdata/jianglab/shared/ExploreData/data_splits/test_set.hdf5"
+test_data_path="/bigdata/jianglab/shared/ExploreData/raw_ms_data/sample_test_set.hdf5"
 smiled_vocab_path="/bigdata/jianglab/shared/ExploreData/vocab/smiles_vocab.json"
 formula_vocab_path="/bigdata/jianglab/shared/ExploreData/vocab/formula_vocab.json"
-model_path="/bigdata/jianglab/shared/ExploreData/models/best_model_gnn.pth"
-num_samples=20000
+model_path="/bigdata/jianglab/shared/ExploreData/models/best_model_gnn_sample.pth"
+num_samples=50000
 
-python "${python_script}" --test_path "${test_data_path}" --smiles_vocab_path "${smiled_vocab_path}" --formula_vocab_path "${formula_vocab_path}" --model_path "${model_path}"
+python "${python_script}" --test_path "${test_data_path}" --smiles_vocab_path "${smiled_vocab_path}" --formula_vocab_path "${formula_vocab_path}" --model_path "${model_path}" --num_samples "${num_samples}"
 
 echo
 echo "Python script finished."

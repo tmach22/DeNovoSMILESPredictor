@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 # --- Configuration ---
 # Path to your large HDF5 file
-INPUT_HDF5_FILE = '/bigdata/jianglab/shared/ExploreData/data_splits/train_set.hdf5'
+INPUT_HDF5_FILE = '/bigdata/jianglab/shared/ExploreData/large_data_split/train_set.hdf5'
 
 # Directory where the smaller chunk files will be saved
 OUTPUT_DIR = '/bigdata/jianglab/shared/ExploreData/raw_ms_data/'
@@ -13,7 +13,7 @@ OUTPUT_DIR = '/bigdata/jianglab/shared/ExploreData/raw_ms_data/'
 # Approximate target size for each chunk in Gigabytes.
 # Note: The script splits by rows, so the final file sizes will be an approximation.
 # This is due to the variable-length string datasets.
-TARGET_CHUNK_SIZE_GB = 0.25
+TARGET_CHUNK_SIZE_GB = 15
 
 def split_hdf5_file(input_file, output_dir, target_chunk_size_gb):
     """
