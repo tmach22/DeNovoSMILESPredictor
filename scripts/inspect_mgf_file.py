@@ -131,7 +131,7 @@ def analyze_mgf_file(file_path):
 
 if __name__ == '__main__':
     # Default file path
-    default_file_path = "/bigdata/jianglab/shared/ExploreData/data_for_dreams_in_silica/chunk_aj.mgf"
+    default_file_path = "/bigdata/jianglab/shared/ExploreData/mgf_chunks/chunk_0.mgf"
     
     # Check if a file path was provided as a command-line argument
     if len(sys.argv) > 1:
