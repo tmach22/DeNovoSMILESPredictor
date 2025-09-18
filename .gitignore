@@ -1,0 +1,13 @@
+# Ignore virtual environment directory
+venv/
+.venv/
+
+# Ignore other Python-specific files and directories
+__pycache__/
+*.pyc
+data_splits/
+large_data_splits/
+mgf_chunks/
+
+# Ignore OS-specific files
+.DS_Store

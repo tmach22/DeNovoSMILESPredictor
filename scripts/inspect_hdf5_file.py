@@ -6,7 +6,7 @@ import traceback
 # --- Configuration ---
 # Path to your HDF5 file
 # Replace this with the actual path to your combined HDF5 file or a chunk file
-HDF5_FILE_PATH = '/bigdata/jianglab/shared/ExploreData/large_data_split/val_set.hdf5'
+HDF5_FILE_PATH = '/data/nas-gpu/wang/tmach007/DeNovoSMILESPredictor/dreams_embeddings/dreams_dataset.hdf5'
 # --- Inspection Functions ---
 
 def inspect_hdf5_structure(file_path):
