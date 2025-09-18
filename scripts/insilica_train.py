@@ -13,13 +13,13 @@ from model import SmilesRecyclingDecoder
 # --- Model Hyperparameters ---
 D_MODEL = 256
 NHEAD = 8
-GNN_LAYERS = 2 
+GNN_LAYERS = 3 
 NUM_DECODER_LAYERS = 6
 DIM_FEEDFORWARD = 1024
 DREAMS_DIM = 1024
 FORMULA_EMB_DIM = 64
 SCAFFOLD_EMB_DIM = 128
-GNN_HIDDEN_DIM = 128
+GNN_HIDDEN_DIM = 256
 NUM_RECYCLING_ITERS = 3
 
 # --- Training Hyperparameters ---
@@ -130,7 +130,7 @@ def main(args):
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             epochs_no_improve = 0
-            checkpoint_path = os.path.join(args.save_dir, 'best_model_gnn_sample.pth')
+            checkpoint_path = os.path.join(args.save_dir, 'best_model_gnn_update.pth')
             torch.save(model.state_dict(), checkpoint_path)
             print(f"Validation loss improved. Model saved to {checkpoint_path}")
         else:

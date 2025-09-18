@@ -8,8 +8,8 @@
 #SBATCH --mem=96G                     # Request 16GB of memory per task (adjust based on chunk size, DreaMS needs RAM)
 #SBATCH --time=0-48:00:00             # Max runtime per task: 30 minutes (adjust based on chunk processing time)
 #SBATCH --gres=gpu:1                  # Request 1 GPU per task (DreaMS leverages GPU heavily for embedding computation) [1]
-#SBATCH --output=/bigdata/jianglab/shared/ExploreData/slurm_logs/train_model_tri_gnn_sample_%A_%a.out # Standard output file
-#SBATCH --error=/bigdata/jianglab/shared/ExploreData/slurm_logs/train_model_tri_gnn_sample_%A_%a.err  # Standard error file
+#SBATCH --output=/bigdata/jianglab/shared/ExploreData/slurm_logs/train_model_tri_gnn_update_%A_%a.out # Standard output file
+#SBATCH --error=/bigdata/jianglab/shared/ExploreData/slurm_logs/train_model_tri_gnn_update_%A_%a.err  # Standard error file
 
 echo "=========================================================="
 echo "Slurm Job ID: $SLURM_JOB_ID"
@@ -28,8 +28,8 @@ echo "Conda environment 'dreams' activated."
 echo
 
 python_script="/bigdata/jianglab/shared/ExploreData/scripts/insilica_train.py"
-train_data_path="/bigdata/jianglab/shared/ExploreData/raw_ms_data/sample_train_set.hdf5"
-val_data_path="/bigdata/jianglab/shared/ExploreData/raw_ms_data/sample_val_set.hdf5"
+train_data_path="/bigdata/jianglab/shared/ExploreData/data_splits/train_set.hdf5"
+val_data_path="/bigdata/jianglab/shared/ExploreData/data_splits/val_set.hdf5"
 smiled_vocab_path="/bigdata/jianglab/shared/ExploreData/vocab/smiles_vocab.json"
 formula_vocab_path="/bigdata/jianglab/shared/ExploreData/vocab/formula_vocab.json"
 model_output_path="/bigdata/jianglab/shared/ExploreData/models/"

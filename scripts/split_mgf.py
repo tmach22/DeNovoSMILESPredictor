@@ -65,8 +65,8 @@ def split_mgf_file(input_file, output_prefix, max_size_mb):
 
 if __name__ == '__main__':
     # Default parameters
-    default_input_file = "/bigdata/jianglab/shared/ExploreData/data_for_dreams_in_silica/chunk_sd.mgf"
-    default_output_prefix = "chunk_sd_"
+    default_input_file = "/bigdata/jianglab/shared/ExploreData/data_for_dreams_in_silica/chunk_zaer.mgf"
+    default_output_prefix = "chunk_zaer_"
     default_max_size_mb = 100
 
     input_file_path = default_input_file

@@ -110,8 +110,8 @@ class SmilesRecyclingDecoder(nn.Module):
         self.d_model = d_model
         self.num_recycling_iters = num_recycling_iters
 
-        NODE_FEATURE_DIM = 38
-        EDGE_FEATURE_DIM = 6
+        NODE_FEATURE_DIM = 148
+        EDGE_FEATURE_DIM = 21
 
         self.formula_encoder = SequenceEncoder(formula_vocab_size, formula_emb_dim, formula_emb_dim, num_layers=2)
         
