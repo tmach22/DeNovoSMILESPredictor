@@ -11,6 +11,10 @@ import argparse
 
 from tokenizer import TokenizerWrapper 
 
+atom_permitted_list = ['Ac','Ag','Al','Am','Ar','As','At','Au','B','Ba','Be','Bh','Bi','Bk','Br','C','Ca','Cd','Ce','Cf','Cl','Cm','Cn','Co','Cr','Cs','Cu','Db','Ds','Dy','Er','Es','Eu','F','Fe','Fl','Fm','Fr','Ga','Gd','Ge','H','He','Hf','Hg','Ho','Hs','I','In','Ir','K','Kr','La','Li','Lr','Lu','Lv','Mc','Md','Mg','Mn','Mo','Mt','N','Na','Nb','Nd','Ne','Nh','Ni','No','Np','O','Og','Os','P','Pa','Pb','Pd','Pm','Po','Pr','Pt','Pu','Ra','Rb','Re','Rf','Rg','Rh','Rn','Ru','S','Sb','Sc','Se','Sg','Si','Sm','Sn','Sr','Ta','Tb','Tc','Te','Th','Ti','Tl','Tm','Ts','U','V','W','Xe','Y','Yb','Zn','Zr']
+hybridization_permitted_list = ['S', 'SP', 'SP2', 'SP3', 'SP3D', 'SP3D2', 'UNSPECIFIED', 'OTHER']
+bond_permitted_list = ['AROMATIC', 'DATIVE', 'DATIVEL', 'DATIVEONE', 'DATIVER', 'DOUBLE', 'FIVEANDAHALF', 'FOURANDAHALF', 'HEXTUPLE', 'HYDROGEN', 'IONIC', 'ONEANDAHALF', 'OTHER', 'QUADRUPLE', 'QUINTUPLE', 'SINGLE', 'THREEANDAHALF', 'THREECENTER', 'TRIPLE', 'TWOANDAHALF']
+
 # --- [Helper functions remain unchanged] ---
 def get_formula_from_smiles(smiles_string):
     mol = Chem.MolFromSmiles(smiles_string)
@@ -22,7 +26,7 @@ def get_murcko_scaffold(smiles_string):
         mol = Chem.MolFromSmiles(smiles_string)
         if mol:
             scaffold = MurckoScaffold.GetScaffoldForMol(mol)
-            return Chem.MolToSMILES(scaffold)
+            return Chem.MolToSmiles(scaffold)
         return ""
     except: return ""
 
@@ -32,24 +36,24 @@ def one_hot_encode(value, permitted_list):
 
 def get_atom_features(atom: Chem.Atom) -> list:
     features = []
-    features += one_hot_encode(atom.GetSymbol(),)
+    features += one_hot_encode(atom.GetSymbol(), atom_permitted_list)
     features += one_hot_encode(atom.GetDegree(), list(range(11)))
     features += one_hot_encode(atom.GetTotalNumHs(), list(range(9)))
-    features += one_hot_encode(str(atom.GetHybridization()),)
+    features += one_hot_encode(str(atom.GetHybridization()), hybridization_permitted_list)
     features.append(atom.GetIsAromatic())
     features.append(atom.IsInRing())
     return features
 
 def get_bond_features(bond: Chem.Bond) -> list:
     features = []; bt = bond.GetBondType()
-    features += one_hot_encode(bt,)
+    features += one_hot_encode(bt, bond_permitted_list)
     features.append(bond.GetIsConjugated())
     return features
 
 def create_dummy_graph():
-    node_features = torch.zeros(1, 38, dtype=torch.float)
+    node_features = torch.zeros(1, 148, dtype=torch.float)
     edge_index = torch.empty(2, 0, dtype=torch.long)
-    edge_attr = torch.empty(0, 6, dtype=torch.float)
+    edge_attr = torch.empty(0, 21, dtype=torch.float)
     return Data(x=node_features, edge_index=edge_index, edge_attr=edge_attr)
 
 def smiles_to_graph_data(smiles: str) -> Data:
@@ -126,13 +130,15 @@ if __name__ == '__main__':
     # Using a small batch size for easy inspection
     test_loader = get_graph_data_loader(
         args.train_path, smiles_tokenizer, formula_tokenizer, 
-        split='train', batch_size=4, num_workers=0
+        split='train', batch_size=64, num_workers=0
     )
     print("Data loader created successfully.")
 
     print("\n--- Step 3: Fetching and Inspecting a Single Batch ---")
     if test_loader:
         first_batch = next(iter(test_loader))
+        second_batch = next(iter(test_loader))
+        first_batch = second_batch
         
         if first_batch:
             print("Batch Contents:")
