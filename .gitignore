@@ -8,6 +8,7 @@ __pycache__/
 data_splits/
 large_data_splits/
 mgf_chunks/
+medium_data_splits/
 
 # Ignore OS-specific files
 .DS_Store
