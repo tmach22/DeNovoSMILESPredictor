@@ -10,6 +10,24 @@ from rdkit import Chem
 from rdkit.DataStructs import TanimotoSimilarity
 from rdkit.Chem import AllChem
 
+from pathlib import Path
+import os
+import sys
+cwd = Path.cwd()
+
+script_dir = os.path.join(cwd, 'scripts')
+print(f"Adding {script_dir} to sys.path")
+# Add the parent directory to the Python path
+sys.path.insert(0, script_dir)
+
+data_loader_dir = os.path.join(cwd, 'data_loaders')
+print(f"Adding {data_loader_dir} to sys.path")
+sys.path.insert(0, data_loader_dir)
+
+model_dir = os.path.join(cwd, 'model_scripts')
+print(f"Adding {model_dir} to sys.path")
+sys.path.insert(0, model_dir)
+
 # Import your custom model and tokenizer classes
 from model import SmilesRecyclingDecoder
 from data_loader import get_formula_from_smiles, get_murcko_scaffold, smiles_to_graph_data
@@ -19,13 +37,13 @@ from tokenizer import TokenizerWrapper
 D_MODEL = 256
 NHEAD = 8
 # UPDATED: Renamed NUM_LAYERS to be more specific and added GNN_LAYERS
-GNN_LAYERS = 2 
+GNN_LAYERS = 3
 NUM_DECODER_LAYERS = 6
 DIM_FEEDFORWARD = 1024
 DREAMS_DIM = 1024
 FORMULA_EMB_DIM = 64
 SCAFFOLD_EMB_DIM = 128
-GNN_HIDDEN_DIM = 128
+GNN_HIDDEN_DIM = 256
 # NEW: Add drop_edge_rate to match the model's __init__ signature
 DROP_EDGE_RATE = 0.2 # This is ignored during eval, but needed for initialization
 NUM_RECYCLING_ITERS = 3
@@ -61,7 +79,10 @@ def generate_smiles(model, dreams_emb, formula_tokens, scaffold_graph, smiles_to
     return smiles_tokenizer.decode(generated_seq.squeeze(0).cpu().tolist())
 
 def main(args):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if(torch.cuda.is_available()):
+        device = args.device
+    else:
+        device = "cpu"
     print(f"Using device: {device}")
 
     print("--- Loading Vocabularies ---")
@@ -130,6 +151,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Evaluate the GNN-enhanced SMILES generator.")
+    parser.add_argument("--device", type=str, default="cpu", required=True, help="Device to use for inference")
     parser.add_argument("--test_path", type=str, required=True, help="Path to test HDF5 file.")
     parser.add_argument("--model_path", type=str, required=True, help="Path to the trained best_model_gnn.pth checkpoint.")
     parser.add_argument("--smiles_vocab_path", type=str, required=True, help="Path to SMILES vocabulary.")
