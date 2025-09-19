@@ -10,6 +10,7 @@ large_data_splits/
 mgf_chunks/
 medium_data_splits/
 slurm_logs/
+raw_ms_data/
 
 # Ignore OS-specific files
 .DS_Store

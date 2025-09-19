@@ -30,7 +30,7 @@ sys.path.insert(0, model_dir)
 
 # Import your custom model and tokenizer classes
 from model import SmilesRecyclingDecoder
-from data_loader import get_formula_from_smiles, get_murcko_scaffold, smiles_to_graph_data
+from data_loader_fast import smiles_to_graph_data
 from tokenizer import TokenizerWrapper
 
 # --- Model Hyperparameters (Must match the trained model) ---
@@ -112,8 +112,11 @@ def main(args):
 
     print(f"Loading test data from: {args.test_path}")
     with h5py.File(args.test_path, 'r') as f:
-        test_embeddings = f['embeddings'][:]; test_smiles = [s.decode('utf-8') for s in f['smiles'][:]]
-    if args.num_samples: test_embeddings, test_smiles = test_embeddings[:args.num_samples], test_smiles[:args.num_samples]
+        test_embeddings = f['embeddings'][:]
+        test_smiles = [s.decode('utf-8') for s in f['smiles'][:]]
+        test_formulas = [f.decode('utf-8') for f in f['formula_strings'][:]]
+        test_scaffolds = [s.decode('utf-8') for s in f['scaffold_smiles'][:]]
+    if args.num_samples: test_embeddings, test_smiles, test_formulas, test_scaffolds = test_embeddings[:args.num_samples], test_smiles[:args.num_samples], test_formulas[:args.num_samples], test_scaffolds[:args.num_samples]
 
     print(f"\n--- Running Inference on {len(test_smiles)} Samples ---")
     predictions, tanimoto_scores, valid_count = [],[], 0
@@ -122,8 +125,8 @@ def main(args):
         true_smiles = test_smiles[i]
         dreams_emb = torch.tensor(test_embeddings[i], dtype=torch.float32).unsqueeze(0).to(device)
         
-        formula_str = get_formula_from_smiles(true_smiles)
-        scaffold_str = get_murcko_scaffold(true_smiles)
+        formula_str = test_formulas[i]
+        scaffold_str = test_scaffolds[i]
         
         formula_tokens = torch.tensor(formula_tokenizer.encode(formula_str), dtype=torch.long).unsqueeze(0).to(device)
         
