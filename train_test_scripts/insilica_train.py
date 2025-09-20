@@ -87,7 +87,10 @@ def validate_epoch(model, loader, criterion, device):
     return total_loss / len(loader)
 
 def main(args):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        device = args.device
+    else:
+        device = "cpu"
     print(f"Using device: {device}")
     os.makedirs(args.save_dir, exist_ok=True)
 
@@ -161,6 +164,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train the GNN-enhanced SMILES generator.")
+    parser.add_argument("--device", type=str, default="cpu", required=True, help="Device to use for inference")
     parser.add_argument("--train_path", type=str, required=True)
     parser.add_argument("--val_path", type=str, required=True)
     parser.add_argument("--smiles_vocab_path", type=str, required=True)
